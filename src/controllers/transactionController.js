@@ -2,6 +2,7 @@ import transactionService from "../services/transactionService.js"
 import { SuccessResponse } from "../utils/response.js"
 import validation from "../validations/validation.js"
 import transactionValidation from "../validations/transactionValidation.js"
+import ocrService from "../services/ocrService.js"
 
 const create = async (req, res, next) => {
   try {
@@ -11,13 +12,11 @@ const create = async (req, res, next) => {
     const validatedRequest = validation(transactionValidation.create, request)
     const transaction = await transactionService.create(validatedRequest, user)
 
-    return res
-      .status(201)
-      .json(
-        new SuccessResponse("Transaction successfully created", {
-          transaction,
-        }),
-      )
+    return res.status(201).json(
+      new SuccessResponse("Transaction successfully created", {
+        transaction,
+      }),
+    )
   } catch (error) {
     next(error)
   }
@@ -31,13 +30,11 @@ const update = async (req, res, next) => {
     const validatedRequest = validation(transactionValidation.update, request)
     const transaction = await transactionService.update(validatedRequest, user)
 
-    return res
-      .status(200)
-      .json(
-        new SuccessResponse("Transaction successfully updated", {
-          transaction,
-        }),
-      )
+    return res.status(200).json(
+      new SuccessResponse("Transaction successfully updated", {
+        transaction,
+      }),
+    )
   } catch (error) {
     next(error)
   }
@@ -51,13 +48,11 @@ const remove = async (req, res, next) => {
     validation(transactionValidation.remove, { id })
     const transaction = await transactionService.remove(id, user)
 
-    return res
-      .status(200)
-      .json(
-        new SuccessResponse("Transaction successfully deleted", {
-          transaction,
-        }),
-      )
+    return res.status(200).json(
+      new SuccessResponse("Transaction successfully deleted", {
+        transaction,
+      }),
+    )
   } catch (error) {
     next(error)
   }
@@ -89,10 +84,34 @@ const getAll = async (req, res, next) => {
   }
 }
 
+const processOCR = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No image file provided",
+      })
+    }
+
+    const result = await ocrService.processOCR(
+      req.file.buffer,
+      req.file.originalname,
+      req.user,
+    )
+
+    return res
+      .status(200)
+      .json(new SuccessResponse("OCR processed successfully", result))
+  } catch (error) {
+    next(error)
+  }
+}
+
 const transactionController = {
   create,
   update,
   remove,
   getAll,
+  processOCR,
 }
 export default transactionController

@@ -2,6 +2,9 @@ import express from "express"
 import transactionController from "../controllers/transactionController.js"
 import { clerkMiddleware } from "@clerk/express"
 import authMiddleware from "../middlewares/authMiddleware.js"
+import multer from "multer"
+
+const upload = multer({ storage: multer.memoryStorage() })
 
 const transactionRouter = express.Router()
 
@@ -9,25 +12,33 @@ transactionRouter.post(
   "/",
   clerkMiddleware(),
   authMiddleware,
-  transactionController.create
+  transactionController.create,
 )
+transactionRouter.post(
+  "/ocr",
+  clerkMiddleware(),
+  authMiddleware,
+  upload.single("image"),
+  transactionController.processOCR,
+)
+
 transactionRouter.put(
   "/:id",
   clerkMiddleware(),
   authMiddleware,
-  transactionController.update
+  transactionController.update,
 )
 transactionRouter.delete(
   "/:id",
   clerkMiddleware(),
   authMiddleware,
-  transactionController.remove
+  transactionController.remove,
 )
 transactionRouter.get(
   "/",
   clerkMiddleware(),
   authMiddleware,
-  transactionController.getAll
+  transactionController.getAll,
 )
 
 export default transactionRouter
