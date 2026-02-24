@@ -2,9 +2,7 @@ import express from "express"
 import transactionController from "../controllers/transactionController.js"
 import { clerkMiddleware } from "@clerk/express"
 import authMiddleware from "../middlewares/authMiddleware.js"
-import multer from "multer"
-
-const upload = multer({ storage: multer.memoryStorage() })
+import upload from "../middlewares/upload.js"
 
 const transactionRouter = express.Router()
 

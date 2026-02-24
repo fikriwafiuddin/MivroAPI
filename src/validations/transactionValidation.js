@@ -29,7 +29,7 @@ const create = z.object({
     .string({
       invalid_type_error: "Notes must be a string",
     })
-    .max(500, "Notes must be at most 500 characters long")
+    .max(100, "Notes must be at most 100 characters long")
     .optional(),
 })
 
@@ -109,7 +109,11 @@ const getAll = z.object({
       message: "Start date must be a valid date string",
     })
     .default(
-      new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        1,
+      ).toISOString(),
     ),
   endDate: z
     .string({
@@ -123,8 +127,8 @@ const getAll = z.object({
       new Date(
         new Date().getFullYear(),
         new Date().getMonth() + 1,
-        0
-      ).toISOString()
+        0,
+      ).toISOString(),
     ),
   page: z
     .preprocess(
@@ -133,7 +137,7 @@ const getAll = z.object({
         .number({
           invalid_type_error: "Page must be number",
         })
-        .positive("Page must be positive number")
+        .positive("Page must be positive number"),
     )
     .default(1),
 })

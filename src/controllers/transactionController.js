@@ -1,5 +1,5 @@
 import transactionService from "../services/transactionService.js"
-import { SuccessResponse } from "../utils/response.js"
+import { ErrorResponse, SuccessResponse } from "../utils/response.js"
 import validation from "../validations/validation.js"
 import transactionValidation from "../validations/transactionValidation.js"
 import ocrService from "../services/ocrService.js"
@@ -87,10 +87,7 @@ const getAll = async (req, res, next) => {
 const processOCR = async (req, res, next) => {
   try {
     if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        message: "No image file provided",
-      })
+      throw new ErrorResponse("No image file provided", 400)
     }
 
     const result = await ocrService.processOCR(
