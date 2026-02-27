@@ -24,12 +24,7 @@ router.use("/feedback", feedbackRouter)
 router.use("/recurrings", recurringRouter)
 
 router.get("/", (req, res) => {
-  res.json(
-    new SuccessResponse(
-      `Welcome to Mivro API, ${process.env.CORS_ORIGIN}`,
-      200,
-    ),
-  )
+  res.json(new SuccessResponse(`Welcome to Mivro API`, 200))
 })
 
 router.all(/.*/, (req, res) =>
